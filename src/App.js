@@ -3,6 +3,10 @@ import './App.css';
 
 import { Navbar, NavbarBrand } from 'reactstrap';
 import {Component} from "react";
+import Menu from './components/MenuComponent';
+
+
+<Menu />
 
 class App extends Component {
   render() {
