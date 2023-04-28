@@ -127,7 +127,7 @@ class Header extends Component {
                     isOpen={this.state.isModalOpen}
                     toggle={this.toggleModal}
                     modalTransition={{ timeout: 2000 }}
-                    fade={false}>                >
+                    fade={false}>
                     <ModalHeader>Login</ModalHeader>
                     <ModalBody>
                         <Form onSubmit={this.handleLogin}>
