@@ -40,3 +40,13 @@ address{
 .modal.fade.in .modal-dialog {
     transform: translate(0,0);
 }
+
+.form-control:valid{
+    border-color: #ced4da;
+}
+
+.comment-btn{
+    color: #6c757d ;
+    background-color: #fff;
+    border-color: #6c757d;
+}

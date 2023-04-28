@@ -1,9 +1,153 @@
-import React from 'react';
-import { Card, CardImg, CardText, CardBody,
-    CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import React, {Component} from 'react';
+import {
+    Card,
+    CardImg,
+    CardText,
+    CardBody,
+    CardTitle,
+    Breadcrumb,
+    BreadcrumbItem,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    Button,
+    Row,
+    Col,
+    Label,
+    Form,
+    FormGroup,
+    Input, FormFeedback
+} from 'reactstrap';
 import {Link} from "react-router-dom";
+import { Control } from 'react-redux-form';
 import Menu from "./MenuComponent";
 
+
+class CommentForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.toggleModal = this.toggleModal.bind(this);
+        this.state = {
+            isModalOpen: false,
+            rating: '',
+            author: '',
+            message: '',
+            touched: {
+                rating: false,
+                author: false,
+                message: false
+            }
+        };
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
+    }
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked :
+            target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+    handleSubmit(event) {
+        console.log('Current State is: ' + JSON.stringify(this.state));
+        alert('Current State is: ' + JSON.stringify(this.state));
+        event.preventDefault();
+    }
+    handleBlur = (field) => (evt) => {
+        this.setState({
+            touched: { ...this.state.touched, [field]: true }
+        });
+    }
+    validate(author) {
+        const errors = {
+            author: ''
+        };
+        if (this.state.touched.author && author.length < 3)
+            errors.author = 'Name should be >= 3 characters';
+        else if (this.state.touched.author && author.length > 15)
+            errors.author = 'Name should be <= 15 characters';
+        return errors;
+
+    }
+
+    toggleModal() {
+        this.setState({
+            isModalOpen: !this.state.isModalOpen,
+        });
+    }
+
+    render(){
+        const errors = this.validate(this.state.author);
+
+        return(
+            <div>
+
+                <Button type="submit" className="btn btn-outline-secondary">
+                    <span className="fa fa-pencil">  Submit Comment</span>
+                </Button>
+                <Modal
+                    isOpen={this.state.isModalOpen}
+                    toggle={this.toggleModal}
+                    fade={false}>
+                    <ModalHeader>Submit Comment</ModalHeader>
+                    <ModalBody>
+                        <Form onSubmit={this.handleSubmit}>
+                            <FormGroup>
+                                <Label htmlFor='rating'>Rating</Label>
+                                <Control.select
+                                    model='.rating'
+                                    id='rating'
+                                    name='rating'
+                                    className='form-control'>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </Control.select>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor='author'>Your Name</Label>
+                                <Input type="text" id="author"
+                                       name="author"
+                                       placeholder="Your Name"
+                                       value={this.state.author}
+                                       valid={errors.author === ''}
+                                       invalid={errors.author !== ''}
+                                       onBlur={this.handleBlur('author')}
+                                       onChange={this.handleInputChange}
+                                       style={{borderColor: "#ced4da"}}
+                                />
+                                <FormFeedback>
+                                    {errors.author}
+                                </FormFeedback>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label htmlFor='comment'>Comment</Label>
+                                <Input
+                                    type='textarea'
+                                    id='comment'
+                                    rows={5}/>
+                            </FormGroup>
+                            <FormGroup row>
+                                <Col md={{size: 10, offset: 2}}>
+                                    <Button type="submit" color="primary">
+                                        Submit
+                                    </Button>
+                                </Col>
+                            </FormGroup>
+                        </Form>
+                    </ModalBody>
+                </Modal>
+            </div>
+        )
+    }
+}
     function RenderComments({comments}){
         if (comments == null) {
             return (<div></div>)
@@ -24,19 +168,19 @@ import Menu from "./MenuComponent";
             )
         })
         return (
-            <div className='col-12 col-md-5 m-1'>
+            <div className=''>
                 <h4> Comments </h4>
                 <ul className='list-unstyled'>
                     {remarks}
                 </ul>
-
+                <CommentForm/>
             </div>
         )
     }
     function RenderDish({dish}) {
         if (dish != null) {
             return (
-                <div className='col-12 col-md-5 m-1'>
+                <div className=''>
                     <Card>
                         <CardImg width="100%" src={dish.image} alt={dish.name} />
                         <CardBody>
@@ -59,6 +203,9 @@ const DishDetail=(props)=>{
                 <div className="row">
                     <Breadcrumb>
                         <BreadcrumbItem>
+                            <Link to="/home">Home</Link>
+                        </BreadcrumbItem>
+                        <BreadcrumbItem>
                             <Link to="/menu">Menu</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem
@@ -70,11 +217,11 @@ const DishDetail=(props)=>{
                         <hr />
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-12 col-md-5 m-1">
+                <div className="row m-2">
+                    <div className="col-6 ml-0 pl-0">
                         <RenderDish dish={props.dish} />
                     </div>
-                    <div className="col-12 col-md-5 m-1">
+                    <div className="col-6 mr-0 pr-0">
                         <RenderComments comments={props.comments} />
                     </div>
                 </div>
