@@ -11,7 +11,6 @@ import {
     ModalHeader,
     ModalBody,
     Button,
-    Row,
     Col,
     Label,
     Form,
@@ -52,10 +51,11 @@ class CommentForm extends Component {
         this.setState({
             [name]: value
         });
+
     }
     handleSubmit(event) {
-        console.log('Current State is: ' + JSON.stringify(this.state));
-        alert('Current State is: ' + JSON.stringify(this.state));
+        this.props.addComment(this.props.dishId, event.rating,
+            event.author, event.comment);
         event.preventDefault();
     }
     handleBlur = (field) => (evt) => {
@@ -87,7 +87,7 @@ class CommentForm extends Component {
         return(
             <div>
 
-                <Button type="submit" className="btn btn-outline-secondary">
+                <Button type="submit" onClick={this.toggleModal} className="btn btn-outline-secondary">
                     <span className="fa fa-pencil">  Submit Comment</span>
                 </Button>
                 <Modal
@@ -148,7 +148,7 @@ class CommentForm extends Component {
         )
     }
 }
-    function RenderComments({comments}){
+function RenderComments({comments, addComment, dishId}) {
         if (comments == null) {
             return (<div></div>)
         }
@@ -173,7 +173,7 @@ class CommentForm extends Component {
                 <ul className='list-unstyled'>
                     {remarks}
                 </ul>
-                <CommentForm/>
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         )
     }
@@ -222,7 +222,11 @@ const DishDetail=(props)=>{
                         <RenderDish dish={props.dish} />
                     </div>
                     <div className="col-6 mr-0 pr-0">
-                        <RenderComments comments={props.comments} />
+                        <RenderComments comments={props.comments}
+                                        addComment={props.addComment}
+                                        dishId={props.dish.id}
+                        />
+
                     </div>
                 </div>
             </div>
