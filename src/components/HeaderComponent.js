@@ -166,6 +166,8 @@ class Header extends Component {
                                 </Label>
                             </FormGroup>
                             <Button
+
+                                className="mt-4"
                                 type='submit'
                                 value='submit'
                                 color='primary'
