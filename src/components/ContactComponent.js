@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import { Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input,
+import { Breadcrumb, BreadcrumbItem, Button, FormGroup, Label, Input,
     Col, FormFeedback } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { Control, Form, Errors, actions } from 'react-redux-form';
 
 class Contact extends Component {
     constructor(props) {
@@ -35,11 +36,13 @@ class Contact extends Component {
             [name]: value
         });
     }
-    handleSubmit(event) {
-        console.log('Current State is: ' + JSON.stringify(this.state));
-        alert('Current State is: ' + JSON.stringify(this.state));
-        event.preventDefault();
+    handleSubmit(values) {
+        console.log('Current State is: ' + JSON.stringify(values));
+        alert('Current State is: ' + JSON.stringify(values));
+        this.props.resetFeedbackForm();
+        // event.preventDefault();
     }
+
 
     handleBlur = (field) => (evt) => {
         this.setState({
@@ -125,7 +128,8 @@ class Contact extends Component {
                     <h3>Send us your Feedback</h3>
                 </div>
                 <div className="col-12 col-md-9">
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form model="feedback" onSubmit={(values) =>
+                        this.handleSubmit(values)}>
                         <FormGroup row>
                             <Label htmlFor="firstname" md={2}>First
                                 Name</Label>
