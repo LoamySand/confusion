@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Breadcrumb, BreadcrumbItem, Button, FormGroup, Label, Input,
     Col, FormFeedback } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { Control, Form, Errors, actions } from 'react-redux-form';
+import {Control, Form, Errors, actions, LocalForm} from 'react-redux-form';
 
 class Contact extends Component {
     constructor(props) {
@@ -38,9 +38,9 @@ class Contact extends Component {
     }
     handleSubmit(values) {
         console.log('Current State is: ' + JSON.stringify(values));
-        alert('Current State is: ' + JSON.stringify(values));
+        alert('Thank You for your Feedback! ' + JSON.stringify(values));
         this.props.resetFeedbackForm();
-        this.props.postFeedback()
+        this.props.postFeedback(values)
         // event.preventDefault();
     }
 
@@ -129,15 +129,15 @@ class Contact extends Component {
                     <h3>Send us your Feedback</h3>
                 </div>
                 <div className="col-12 col-md-9">
-                    <Form model="feedback" onSubmit={(values) =>
-                        this.handleSubmit(values)}>
+                    <LocalForm model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
                         <FormGroup row>
                             <Label htmlFor="firstname" md={2}>First
                                 Name</Label>
                             <Col md={10}>
-                                <Input type="text" id="firstname"
+                                <Control.text model='.firstname' type="text" id="firstname"
                                        name="firstname"
                                        placeholder="First Name"
+                                      className='form-control'
                                        value={this.state.firstname}
                                        valid={errors.firstname === ''}
                                        invalid={errors.firstname !== ''}
@@ -153,9 +153,10 @@ class Contact extends Component {
                             <Label htmlFor="lastname" md={2}>Last
                                 Name</Label>
                             <Col md={10}>
-                                <Input type="text" id="lastname"
+                                <Control.text model='.lastname' type="text" id="lastname"
                                        name="lastname"
                                        placeholder="Last Name"
+                                              className='form-control'
                                        value={this.state.lastname}
                                        valid={errors.lastname === ''}
                                        invalid={errors.lastname !== ''}
@@ -171,9 +172,10 @@ class Contact extends Component {
                             <Label htmlFor="telnum" md={2}>Contact
                                 Tel.</Label>
                             <Col md={10}>
-                                <Input type="tel" id="telnum"
+                                <Control.text model='.telnum' type="tel" id="telnum"
                                        name="telnum"
                                        placeholder="Tel. number"
+                                              className='form-control'
                                        value={this.state.telnum}
                                        valid={errors.telnum === ''}
                                        invalid={errors.telnum !== ''}
@@ -188,9 +190,10 @@ class Contact extends Component {
                         <FormGroup row>
                             <Label htmlFor="email" md={2}>Email</Label>
                             <Col md={10}>
-                                <Input type="email" id="email"
+                                <Control.text model='.email' type="email" id="email"
                                        name="email"
                                        placeholder="Email"
+                                              className='form-control'
                                        value={this.state.email}
                                        valid={errors.email === ''}
                                        invalid={errors.email !== ''}
@@ -205,37 +208,36 @@ class Contact extends Component {
                         <FormGroup row>
                             <Col md={{size: 6, offset: 2}}>
                                 <FormGroup check>
-                                    <Label check>
-                                        <Input type="checkbox"
+                                        <Control.checkbox model='.agree' type="checkbox"
+                                              className='form-control'
                                                name="agree"
                                                checked={this.state.agree}
-
-                                               onChange={this.handleInputChange} /> {' '}
+                                               onChange={this.handleInputChange} />
+                                    <Label htmlfor='agree'>
                                         <strong>May we contact
                                             you?</strong>
                                     </Label>
                                 </FormGroup>
                             </Col>
                             <Col md={{size: 3, offset: 1}}>
-                                <Input type="select" name="contactType"
+                                <Control.select model='.contactType' type="select" name="contactType" className='form-control'
                                        value={this.state.contactType}
-
                                        onChange={this.handleInputChange}>
                                     <option>Tel.</option>
                                     <option>Email</option>
-                                </Input>
+                                </Control.select>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
                             <Label htmlFor="message" md={2}>Your
                                 Feedback</Label>
                             <Col md={10}>
-                                <Input type="textarea" id="message"
+                                <Control.textarea model='.message' type="textarea" id="message"
                                        name="message"
                                        rows="12"
+                                      cols={55}
                                        value={this.state.message}
-
-                                       onChange={this.handleInputChange}></Input>
+                                       onChange={this.handleInputChange}></Control.textarea>
                             </Col>
                         </FormGroup>
                         <FormGroup row>
@@ -245,7 +247,7 @@ class Contact extends Component {
                                 </Button>
                             </Col>
                         </FormGroup>
-                    </Form>
+                    </LocalForm>
                 </div>
             </div>
         </div>

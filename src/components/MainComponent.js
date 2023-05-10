@@ -91,7 +91,8 @@ class Main extends Component {
                         dishes={this.props.dishes} />} />
                     <Route path='/menu/:dishId' component={DishWithId} />
                     <Route exact path='/contactus' component={() => <Contact
-                        resetFeedbackForm={this.props.resetFeedbackForm} />} />
+                        resetFeedbackForm={this.props.resetFeedbackForm}
+                        postFeedback={this.props.postFeedback}/>} />
                     <Redirect to="/home" />
                 </Switch>
                 <Footer />
