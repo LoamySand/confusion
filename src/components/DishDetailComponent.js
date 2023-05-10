@@ -13,12 +13,10 @@ import {
     Button,
     Col,
     Label,
-    Form,
-    FormGroup,
-    Input, FormFeedback
+    FormGroup, FormFeedback, Row
 } from 'reactstrap';
 import {Link} from "react-router-dom";
-import { Control } from 'react-redux-form';
+import {Control, LocalForm} from 'react-redux-form';
 import {Loading} from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 
@@ -55,9 +53,7 @@ class CommentForm extends Component {
 
     }
     handleSubmit(event) {
-        this.props.addComment(this.props.dishId, event.rating,
-            event.author, event.comment);
-        event.preventDefault();
+        this.props.postComment(this.props.dishId, event.rating, event.author, event.comment);
     }
     handleBlur = (field) => (evt) => {
         this.setState({
@@ -87,8 +83,7 @@ class CommentForm extends Component {
 
         return(
             <div>
-
-                <Button type="submit" onClick={this.toggleModal} className="btn btn-outline-secondary">
+                <Button outline onClick={this.toggleModal}>
                     <span className="fa fa-pencil">  Submit Comment</span>
                 </Button>
                 <Modal
@@ -97,59 +92,69 @@ class CommentForm extends Component {
                     fade={false}>
                     <ModalHeader>Submit Comment</ModalHeader>
                     <ModalBody>
-                        <Form onSubmit={this.handleSubmit}>
-                            <FormGroup>
-                                <Label htmlFor='rating'>Rating</Label>
-                                <Control.select
-                                    model='.rating'
-                                    id='rating'
-                                    name='rating'
-                                    className='form-control'>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </Control.select>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label htmlFor='author'>Your Name</Label>
-                                <Input type="text" id="author"
-                                       name="author"
-                                       placeholder="Your Name"
-                                       value={this.state.author}
-                                       valid={errors.author === ''}
-                                       invalid={errors.author !== ''}
-                                       onBlur={this.handleBlur('author')}
-                                       onChange={this.handleInputChange}
-                                       style={{borderColor: "#ced4da"}}
-                                />
-                                <FormFeedback>
-                                    {errors.author}
-                                </FormFeedback>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label htmlFor='comment'>Comment</Label>
-                                <Input
-                                    type='textarea'
-                                    id='comment'
-                                    rows={5}/>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Col md={{size: 10, offset: 2}}>
-                                    <Button type="submit" color="primary">
-                                        Submit
-                                    </Button>
-                                </Col>
-                            </FormGroup>
-                        </Form>
+                            <LocalForm onSubmit={this.handleSubmit}>
+                                <FormGroup>
+                                    <Label htmlFor='rating'>Rating</Label>
+                                   <Col>
+                                        <Control.select
+                                            model='.rating'
+                                            id='rating'
+                                            name='rating'
+                                            className='form-control'>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </Control.select>
+                                   </Col>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label htmlFor='author'>Your Name</Label>
+                                    <Col lg={12}>
+                                        <Control.text
+                                            size={52}
+                                            model=".author"
+                                            type="text"
+                                            id="author"
+                                            name="author"
+                                            placeholder="Your Name"
+                                            value={this.state.author}
+                                            valid={errors.author === ''}
+                                            invalid={errors.author !== ''}
+                                            onBlur={this.handleBlur('author')}
+                                            onChange={this.handleInputChange}
+                                            />
+                                        <FormFeedback>
+                                            {errors.author}
+                                        </FormFeedback>
+                                    </Col>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label htmlFor='comment'>Comment</Label>
+                                    <Col>
+                                    <Control.textarea
+                                        model=".comment"
+                                        type='textarea'
+                                        id='comment'
+                                        rows={5}
+                                        cols={55} />
+                                    </Col>
+                                </FormGroup>
+                                    <Col>
+                                        <Button type="submit" value="submit" color="primary">
+                                            Submit
+                                        </Button>
+                                    </Col>
+
+                            </LocalForm>
                     </ModalBody>
                 </Modal>
             </div>
         )
     }
 }
-function RenderComments({comments, addComment, dishId}) {
+function RenderComments({comments, postComment, dishId}) {
         if (comments == null) {
             return (<div></div>)
         }
@@ -174,7 +179,7 @@ function RenderComments({comments, addComment, dishId}) {
                 <ul className='list-unstyled'>
                     {remarks}
                 </ul>
-                <CommentForm dishId={dishId} addComment={addComment} />
+                <CommentForm dishId={dishId} postComment={postComment} />
             </div>
         )
     }
@@ -236,11 +241,10 @@ const DishDetail=(props)=>{
                     <RenderDish dish={props.dish} />
                     </div>
                     <div className='col-6 mr-0 pr-0'>
-                    <RenderComments
-                        comments={props.comments}
-                        addComment={props.addComment}
-                        dishId={props.dish.id}
-                    />
+                        <RenderComments
+                            comments={props.comments}
+                            postComment={props.postComment}
+                            dishId={props.dish.id} />
                     </div>
                 </div>
             </div>
